@@ -1,0 +1,16 @@
+#!/bin/sh
+# Block pushes that update or delete protected branches on the remote.
+# Creating a protected branch on the remote for the first time is allowed.
+zero=0000000000000000000000000000000000000000
+status=0
+while read -r local_ref local_sha remote_ref remote_sha; do
+  case "$remote_ref" in
+    refs/heads/master|refs/heads/develop)
+      if [ "$remote_sha" != "$zero" ]; then
+        echo "error: pushing to '${remote_ref#refs/heads/}' is blocked. Merge via a pull request." >&2
+        status=1
+      fi
+      ;;
+  esac
+done
+exit $status

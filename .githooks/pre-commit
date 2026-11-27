@@ -1,0 +1,13 @@
+#!/bin/sh
+# Block direct commits to protected branches.
+# The repository's root commit is allowed so it can be bootstrapped.
+git rev-parse --verify -q HEAD >/dev/null || exit 0
+
+branch=$(git symbolic-ref --short -q HEAD)
+case "$branch" in
+  master|develop)
+    echo "error: direct commits to '$branch' are blocked. Use a feature/* branch and open a PR." >&2
+    exit 1
+    ;;
+esac
+exit 0
