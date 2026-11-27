@@ -99,16 +99,11 @@ struct ColorRow: View {
     private let swatchSize: CGFloat = 28
 
     var body: some View {
-        ViewThatFits(in: .horizontal) {
-            HStack(spacing: 8) {
-                title
-                Spacer(minLength: 0)
-                swatches
-            }
-            VStack(alignment: .leading, spacing: 6) {
-                title
-                swatches
-            }
+        VStack(alignment: .leading, spacing: 6) {
+            title
+            swatches
+                // Let the 44 pt touch targets overhang so the outer circles align with the label and divider.
+                .padding(.horizontal, -(targetSize - swatchSize) / 2)
         }
     }
 
@@ -122,6 +117,9 @@ struct ColorRow: View {
         return HStack(spacing: 0) {
             ForEach(FrameColor.presets) { preset in
                 let isSelected = selectedPreset?.id == preset.id
+                if preset.id != FrameColor.presets.first?.id {
+                    Spacer(minLength: 0)
+                }
                 Button {
                     color = preset.color
                 } label: {
@@ -138,6 +136,7 @@ struct ColorRow: View {
                 .accessibilityAddTraits(isSelected ? .isSelected : [])
             }
 
+            Spacer(minLength: 0)
             ColorPicker(
                 "Custom color",
                 selection: Binding(
