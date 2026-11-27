@@ -73,7 +73,7 @@ struct FrameGeometry {
 2. **Editing screen:**
    - Toolbar: a photo picker button (leading) and Share (trailing).
    - Preview: the full photograph with square corners and the frame overlay. Press and hold to hide the frame. The same comparison is available as an accessibility action ("Show original").
-   - Controls: labeled sliders with values (`0.50%`, `5.0%`, `0%`). A color row with six preset swatches and a `ColorPicker`. Reset and Save Photo buttons.
+   - Controls: labeled sliders with values (width and offset in full-resolution pixels, e.g. `15 px`, `150 px`; transparency `0%`). A color row with six preset swatches and a `ColorPicker`. Reset and Save Photo buttons.
    - Saving shows a progress indicator, then a brief, non-modal "Saved" confirmation. Errors are shown in an alert.
 3. **Layouts** are selected by available size rather than device type:
    - Compact width, taller than wide (iPhone portrait, narrow iPad split view): preview above the controls.

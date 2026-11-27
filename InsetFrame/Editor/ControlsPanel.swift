@@ -2,15 +2,21 @@ import SwiftUI
 
 struct ControlsPanel: View {
     @Binding var settings: FrameSettings
+    /// Orientation-corrected full-resolution size of the current photograph, used to show pixel values.
+    let imageSize: CGSize
     let isExporting: Bool
     let onReset: () -> Void
     let onSave: () -> Void
 
     var body: some View {
+        // The same geometry the export uses, so the displayed pixels match the exported frame.
+        let geometry = FrameGeometry(imageRect: CGRect(origin: .zero, size: imageSize), settings: settings)
+
         VStack(alignment: .leading, spacing: 20) {
             LabeledSlider(
                 title: "Frame width",
-                valueText: Self.percentText(settings.widthPercent, fractionDigits: 2),
+                valueText: Self.pixelText(geometry.frameWidth),
+                accessibilityValueText: Self.pixelAccessibilityText(geometry.frameWidth),
                 value: Binding(
                     get: { WidthSliderMapping.position(forPercent: settings.widthPercent) },
                     set: { settings.widthPercent = WidthSliderMapping.percent(forPosition: $0) }
@@ -19,7 +25,8 @@ struct ControlsPanel: View {
             )
             LabeledSlider(
                 title: "Frame offset",
-                valueText: Self.percentText(settings.offsetPercent, fractionDigits: 1),
+                valueText: Self.pixelText(geometry.frameOffset),
+                accessibilityValueText: Self.pixelAccessibilityText(geometry.frameOffset),
                 value: $settings.offsetPercent,
                 range: FrameSettings.offsetRange,
                 step: 0.1
@@ -53,7 +60,16 @@ struct ControlsPanel: View {
         }
     }
 
-    static func percentText(_ percent: Double, fractionDigits: Int) -> String {
+    /// Full-resolution pixels, rounded to a whole pixel for display (for example, "15 px").
+    nonisolated static func pixelText(_ pixels: CGFloat) -> String {
+        "\(Int(pixels.rounded()).formatted()) px"
+    }
+
+    nonisolated static func pixelAccessibilityText(_ pixels: CGFloat) -> String {
+        String(localized: "\(Int(pixels.rounded())) pixels")
+    }
+
+    nonisolated static func percentText(_ percent: Double, fractionDigits: Int) -> String {
         (percent / 100).formatted(.percent.precision(.fractionLength(fractionDigits)))
     }
 }
@@ -61,6 +77,7 @@ struct ControlsPanel: View {
 struct LabeledSlider: View {
     let title: LocalizedStringKey
     let valueText: String
+    var accessibilityValueText: String?
     @Binding var value: Double
     let range: ClosedRange<Double>
     var step: Double?
@@ -78,7 +95,7 @@ struct LabeledSlider: View {
 
             slider
                 .accessibilityLabel(Text(title))
-                .accessibilityValue(Text(valueText))
+                .accessibilityValue(Text(accessibilityValueText ?? valueText))
         }
     }
 

@@ -65,7 +65,7 @@ struct EditorView: View {
             preview(photo: photo)
                 .padding([.horizontal, .top])
             ScrollView {
-                controls
+                controls(photo: photo)
                     .padding()
                     .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { controlsHeight = $0 }
             }
@@ -82,7 +82,7 @@ struct EditorView: View {
             Divider()
                 .ignoresSafeArea(edges: .bottom)
             ScrollView {
-                controls.padding()
+                controls(photo: photo).padding()
             }
             .scrollBounceBehavior(.basedOnSize)
             .frame(width: sidePanelWidth)
@@ -110,9 +110,10 @@ struct EditorView: View {
             }
     }
 
-    private var controls: some View {
+    private func controls(photo: SourcePhoto) -> some View {
         ControlsPanel(
             settings: $model.settings,
+            imageSize: photo.pixelSize,
             isExporting: model.isExporting,
             onReset: model.resetSettings,
             onSave: { Task { await model.saveToPhotos() } }
