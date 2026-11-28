@@ -40,9 +40,9 @@ Provide three primary sliders and a color picker.
 
 - Control the thickness of the frame line.
 - Support extremely thin, subtle lines as well as thicker, more pronounced frames.
-- Display the current value alongside the slider as a percentage of the photograph's shortest dimension (for example, "0.50%"), never as a unitless number or in pixels or points.
+- Display the current value alongside the slider in pixels at the photograph's full resolution (for example, "15 px" for 0.5% of a 3000-pixel shortest dimension), rounded to the nearest whole pixel. The value is stored and applied as a percentage of the shortest dimension (see Resolution-Independent Frame Geometry); pixels are a display unit only.
 - Range: 0% to 5% of the shortest dimension. Default: 0.5%.
-- Use a nonlinear (for example, quadratic) slider mapping so that very thin widths can be set precisely. Display the value with two decimal places.
+- Use a nonlinear (for example, quadratic) slider mapping so that very thin widths can be set precisely. Store the percentage with two decimal places.
 - A width of 0% renders no frame.
 - Update the preview continuously as the slider is adjusted.
 
@@ -52,7 +52,7 @@ Provide three primary sliders and a color picker.
 - Apply the same offset to all four sides.
 - Allow the frame to be positioned close to the photograph's edges or significantly farther inward.
 - Adjust the offset independently of the frame width.
-- Display the current value as a percentage of the photograph's shortest dimension, with one decimal place.
+- Display the current value in pixels at the photograph's full resolution, rounded to the nearest whole pixel. Store it as a percentage of the shortest dimension, with one decimal place.
 - Range: 0% to 20% of the shortest dimension. Default: 5%.
 - Prevent invalid combinations of frame width and offset. The width and offset ranges are chosen so that every combination is valid: at their maximums, `2 * (20% + 5%) = 50%` of the shortest dimension, leaving a positive interior. The sliders therefore never constrain each other.
 
@@ -151,7 +151,7 @@ The user should be able to complete this workflow within seconds.
 
 `docs/suggested interface.jpg` shows the intended iPhone portrait layout: a toolbar with photo picker and share actions, the preview, labeled sliders with values, a color swatch row, and Reset and Save Photo actions. Where it conflicts with this document, this document takes precedence. In particular:
 
-- The frame width value must be shown as a percentage, not "2.0".
+- The frame width value must be shown with its unit (pixels), not as "2.0".
 - The color row must include the native custom color picker in addition to the presets.
 - The preview must not have rounded corners.
 - The frame offset must be equal on all four sides.
@@ -191,7 +191,7 @@ The application must operate entirely on-device and function without an internet
 
 ### Resolution-Independent Frame Geometry
 
-Calculate frame width and frame offset as percentages of the photograph's shortest dimension, rather than fixed pixel values. This ensures consistent visual proportions regardless of image resolution, aspect ratio, orientation, or device screen size.
+Calculate frame width and frame offset as percentages of the photograph's shortest dimension, rather than fixed pixel values. This ensures consistent visual proportions regardless of image resolution, aspect ratio, orientation, or device screen size. Remembered settings therefore keep the same proportions on the next photograph, and the displayed pixel values change with that photograph's resolution.
 
 Use the same geometry calculations for both the real-time preview and full-resolution export.
 
